@@ -53,8 +53,11 @@ func main() {
 	app.Use(recover.New())
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowOrigins:     "http://localhost:5173, http://localhost:4173",
+		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowCredentials: false,
+		MaxAge:           300,
 	}))
 
 	api := app.Group("/api")
@@ -80,6 +83,9 @@ func main() {
 	port := cfg.AppPort
 	if port == "" {
 		port = ":8080"
+	}
+	if port[0] != ':' {
+		port = ":" + port
 	}
 	log.Printf("listening on %s", port)
 	if err := app.Listen(port); err != nil {
